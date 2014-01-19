@@ -2,7 +2,7 @@ import sys
 import re
 class PyAwk(object):
     def __init__(self):
-        self.PATTERN_METHOD_PREFIX = 'pat' # Prefix of pattern method
+        self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
         self.FS = '[ \t+]' # Field separator
         self.FILENAME = '' # File name
         self.NF = 0 # Number of fields
@@ -57,12 +57,12 @@ class PyAwk(object):
             self.NF = len(columns) if stripped_line else 0
             columns.insert(0, stripped_line)
 
-            # Call each pattern
-            patterns = [ name for name in dir(self.__class__) if name.startswith(self.PATTERN_METHOD_PREFIX) ]
-            for pattern in patterns:
-                method = getattr(self, pattern, None)
-                if method != None and callable(method):
-                    method(columns)
+            # Call each action
+            actions = [ name for name in dir(self.__class__) if name.startswith(self.ACTION_METHOD_PREFIX) ]
+            for action in actions:
+                action_method = getattr(self, action, None)
+                if action_method != None and callable(action_method):
+                    action_method(columns)
 
 if __name__ == '__main__':
     from doctest import testmod
