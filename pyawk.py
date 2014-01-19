@@ -3,7 +3,7 @@ import re
 class PyAwk(object):
     def __init__(self):
         self.PATTERN_METHOD_PREFIX = 'pat' # Prefix of pattern method
-        self.FS = ' +' # Field separator
+        self.FS = '[ \t+]' # Field separator
         self.FILENAME = '' # File name
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
@@ -32,20 +32,20 @@ class PyAwk(object):
         # Set input type
         if len(sys.argv) == 1:
             input_lines = sys.stdin
-            self.each_line(input_lines)
+            self.__each_line(input_lines)
         else:
             del sys.argv[0:1]
             for file_name in sys.argv:
                 with open(file_name) as input_lines:
                     self.FILENAME = file_name
-                    self.each_line(input_lines)
+                    self.__each_line(input_lines)
 
         # Call end method
         end_method = getattr(self, 'end', None)
         if end_method != None and callable(end_method):
             end_method()
 
-    def each_line(self, input_lines):
+    def __each_line(self, input_lines):
         '''Process each line'''
         self.FNR = 0
         # Read lines

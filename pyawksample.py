@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3.3
 from pyawk import PyAwk
 class PyAwkSample(PyAwk):
     def begin(self):
@@ -9,9 +10,7 @@ class PyAwkSample(PyAwk):
         if self.FILENAME != self.current_file_name:
             print('FILENAME', self.FILENAME)
             self.current_file_name = self.FILENAME
-        print('NF', self.NF)
-        print('FNR', self.FNR)
-        print(S[0], '\n')
+        print(str(self.FNR) + '\t' + S[self.NF])
 
     def pattern2(self, S):
         if len(S) >= 10 and self.p(S[9], r'\.py'):
