@@ -31,25 +31,24 @@ class PyAwk(object):
 
         # Set input type
         if len(sys.argv) == 1:
-            input_lines = sys.stdin
-            self.__each_line(input_lines)
+            f = sys.stdin
+            self.__each_line(f)
         else:
-            del sys.argv[0:1]
-            for file_name in sys.argv:
-                with open(file_name) as input_lines:
+            for file_name in sys.argv[1:]:
+                with open(file_name) as f:
                     self.FILENAME = file_name
-                    self.__each_line(input_lines)
+                    self.__each_line(f)
 
         # Call end method
         end_method = getattr(self, 'end', None)
         if end_method != None and callable(end_method):
             end_method()
 
-    def __each_line(self, input_lines):
+    def __each_line(self, f):
         '''Process each line'''
         self.FNR = 0
         # Read lines
-        for line in input_lines:
+        for line in f:
             self.NR = self.NR + 1
             self.FNR = self.FNR + 1
             stripped_line = line.strip()
