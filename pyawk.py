@@ -1,26 +1,17 @@
 import sys
+import os
 import re
 class PyAwk(object):
     def __init__(self):
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
-        self.FS = '[ \t+]' # Field separator
         self.FILENAME = '' # File name
+        self.FS = '[ \t+]' # Field separator
+        self.OFS = ' ' # Output field separator
+        self.RS = os.linesep # Record separator
+        self.ORS = os.linesep # Output record separator
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
-
-    def p(self, string, pattern):
-        '''
-        Pattern matcher
-        >>> PyAwk().p('Python3', r'^[A-Z]\w{5}')
-        True
-        >>> PyAwk().p('Python3', r'[a-z]\d$')
-        True
-        >>> PyAwk().p('Python3', r'^\w.*\s.*\d$')
-        False
-        '''
-        p = re.compile(pattern)
-        return True if p.search(string) != None else False
 
     def run(self):
         '''Run PyAwk'''
@@ -35,7 +26,7 @@ class PyAwk(object):
             self.__each_line(f)
         else:
             for file_name in sys.argv[1:]:
-                with open(file_name) as f:
+                with open(file_name, newline=self.RS) as f:
                     self.FILENAME = file_name
                     self.__each_line(f)
 
@@ -62,6 +53,29 @@ class PyAwk(object):
                 action_method = getattr(self, action, None)
                 if action_method != None and callable(action_method):
                     action_method(columns)
+
+    def p(self, string, pattern):
+        '''
+        Pattern matcher
+        >>> PyAwk().p('Python3', r'^[A-Z]\w{5}')
+        True
+        >>> PyAwk().p('Python3', r'[a-z]\d$')
+        True
+        >>> PyAwk().p('Python3', r'^\w.*\s.*\d$')
+        False
+        '''
+        p = re.compile(pattern)
+        return True if p.search(string) != None else False
+
+    def print(self, *args):
+        '''
+        >>> PyAwk().print('Python3')
+        Python3
+        >>> PyAwk().print('Python3', 'awk')
+        Python3 awk
+        '''
+        string = self.OFS.join(args)
+        print(string, end=self.ORS)
 
 if __name__ == '__main__':
     from doctest import testmod
