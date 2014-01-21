@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python3.3
 from pyawk import PyAwk
 class CSVtoTSV(PyAwk):
     def begin(self):
