@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.3
+#!/usr/bin/env python3.3
 from pyawk import PyAwk
 class BuiltInValiable(PyAwk):
     def begin(self):
