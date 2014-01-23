@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.3
 from pyawk import PyAwk
 class Template(PyAwk):
     def begin(self):
