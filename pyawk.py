@@ -63,9 +63,12 @@ class PyAwk(object):
             self.__each_line(f)
         else:
             for file_name in self._args.files[0:]:
-                with open(file_name, newline=self.RS) as f:
-                    self.FILENAME = file_name
-                    self.__each_line(f)
+                try:
+                    with open(file_name, newline=self.RS) as f:
+                        self.FILENAME = file_name
+                        self.__each_line(f)
+                except IOError as e:
+                    sys.stderr.write(str(e) + '\n')
 
         # Call end method
         end_method = getattr(self, 'end', None)
