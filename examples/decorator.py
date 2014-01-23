@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.3
-from pyawk import PyAwk
+from pyawk import PyAwk, p
 def decorate_action(method):
     def wrapper(self, *args):
         self.print('decorate_action start')

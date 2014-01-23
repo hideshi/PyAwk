@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.3
-from pyawk import PyAwk
+from pyawk import PyAwk, p
 class LTSVParser(PyAwk):
     def begin(self):
         self.FS = '\t'
