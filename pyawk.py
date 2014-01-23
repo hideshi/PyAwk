@@ -96,8 +96,7 @@ class PyAwk(object):
         >>> PyAwk().print('Python3', 'awk')
         Python3 awk
         '''
-        string = self.OFS.join(args)
-        print(string, end=self.ORS)
+        print(*args, sep=self.OFS, end=self.ORS)
 
 if __name__ == '__main__':
     from doctest import testmod
