@@ -7,7 +7,7 @@ class LTSVParser(PyAwk):
     def action(self, S):
         self.print('----------')
         d = {}
-        for elem in S:
+        for elem in S[1:]:
             key, value = elem.split(':', 1)
             d[key] = value
         self.print(d)
