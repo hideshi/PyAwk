@@ -15,11 +15,11 @@ def _debugger(action_method):
 def p(string, pattern):
     '''
     Pattern matcher
-    >>> PyAwk().p('Python3', r'^[A-Z]\w{5}')
+    >>> p('Python3', r'^[A-Z]\w{5}')
     True
-    >>> PyAwk().p('Python3', r'[a-z]\d$')
+    >>> p('Python3', r'[a-z]\d$')
     True
-    >>> PyAwk().p('Python3', r'^\w.*\s.*\d$')
+    >>> p('Python3', r'^\w.*\s.*\d$')
     False
     '''
     p = re.compile(pattern)
