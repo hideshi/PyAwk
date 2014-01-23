@@ -5,7 +5,7 @@ class CSVtoTSV(PyAwk):
         self.FS = '\s*,\s*'
 
     def action(self, S):
-        print('\t'.join(S[1:]))
+        self.print('\t'.join(S[1:]))
 
 if __name__ == '__main__':
     CSVtoTSV().run()

@@ -7,13 +7,13 @@ class BuiltInValiable(PyAwk):
         self.OFS = '\t'
         self.RS = '\n'
         self.ORS = '\r\n'
-        print(self.a)
-        print(self.b)
+        self.print(self.a)
+        self.print(self.b)
 
     def action(self, S):
         if self.p(self.FILENAME, r'\.csv'):
             if self.FNR == 1:
-                print(self.FILENAME)
+                self.print(self.FILENAME)
             self.print(str(self.FNR), str(self.NR), S[1], S[self.NF])
 
 if __name__ == '__main__':
