@@ -3,9 +3,12 @@ import os
 import re
 import argparse
 
-def debugger(action_method):
+def _debugger(action_method):
     def wrapper(self, columns):
-        print('++ NR={} FNR={}'.format(str(self.NR), str(self.FNR)), columns) if self._args.debug else ''
+        if self._args.debug:
+            self.print('++')
+            self.print('++', columns, getattr(self, '__dict__', None))
+            self.print('++')
         action_method(columns)
     return wrapper
 
@@ -73,7 +76,7 @@ class PyAwk(object):
             for action in actions:
                 action_method = getattr(self, action, None)
                 if action_method != None and callable(action_method):
-                    wrapped_method = debugger(action_method)
+                    wrapped_method = _debugger(action_method)
                     wrapped_method(self, columns)
 
     def p(self, string, pattern):
