@@ -8,9 +8,10 @@ class BuiltInValiable(PyAwk):
         self.ORS = '\r\n'
 
     def action(self, S):
-        if self.FNR == 1:
-            print(self.FILENAME)
-        self.print(str(self.FNR), str(self.NR), S[1], S[self.NF])
+        if self.p(self.FILENAME, r'\.csv'):
+            if self.FNR == 1:
+                print(self.FILENAME)
+            self.print(str(self.FNR), str(self.NR), S[1], S[self.NF])
 
 if __name__ == '__main__':
     BuiltInValiable().run()
