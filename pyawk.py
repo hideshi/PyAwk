@@ -12,6 +12,19 @@ def _debugger(action_method):
         action_method(columns)
     return wrapper
 
+def p(string, pattern):
+    '''
+    Pattern matcher
+    >>> PyAwk().p('Python3', r'^[A-Z]\w{5}')
+    True
+    >>> PyAwk().p('Python3', r'[a-z]\d$')
+    True
+    >>> PyAwk().p('Python3', r'^\w.*\s.*\d$')
+    False
+    '''
+    p = re.compile(pattern)
+    return True if p.search(string) != None else False
+
 class PyAwk(object):
     def __init__(self):
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
@@ -78,19 +91,6 @@ class PyAwk(object):
                 if action_method != None and callable(action_method):
                     wrapped_method = _debugger(action_method)
                     wrapped_method(self, columns)
-
-    def p(self, string, pattern):
-        '''
-        Pattern matcher
-        >>> PyAwk().p('Python3', r'^[A-Z]\w{5}')
-        True
-        >>> PyAwk().p('Python3', r'[a-z]\d$')
-        True
-        >>> PyAwk().p('Python3', r'^\w.*\s.*\d$')
-        False
-        '''
-        p = re.compile(pattern)
-        return True if p.search(string) != None else False
 
     def print(self, *args):
         '''

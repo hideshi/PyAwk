@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.3
 # ./builtinvaliable -d -v a=10,b=20 files
-from pyawk import PyAwk
+from pyawk import PyAwk, p
 class BuiltInValiable(PyAwk):
     def begin(self):
         self.FS = ','
@@ -11,7 +11,7 @@ class BuiltInValiable(PyAwk):
         self.print(self.b)
 
     def action(self, S):
-        if self.p(self.FILENAME, r'\.csv'):
+        if p(self.FILENAME, r'\.csv'):
             if self.FNR == 1:
                 self.print(self.FILENAME)
             self.print(str(self.FNR), str(self.NR), S[1], S[self.NF])
