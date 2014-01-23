@@ -1,6 +1,14 @@
 import sys
 import os
 import re
+import argparse
+
+def debugger(action_method):
+    def wrapper(self, columns):
+        print('++ NR={} FNR={}'.format(str(self.NR), str(self.FNR)), columns) if self._args.debug else ''
+        action_method(columns)
+    return wrapper
+
 class PyAwk(object):
     def __init__(self):
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
@@ -15,17 +23,30 @@ class PyAwk(object):
 
     def run(self):
         '''Run PyAwk'''
+        # Parse arguments
+        parser = argparse.ArgumentParser(description='Process arguments')
+        parser.add_argument('-d', '--debug', help='enable debug mode', action='store_true')
+        parser.add_argument('-v', metavar='valiables', help='set valiables key=value,[key=value ...]')
+        parser.add_argument('files', metavar='file', nargs='*', help='input file')
+        self._args = parser.parse_args()
+
+        if self._args.v:
+            valiables = self._args.v.split(',')
+            for v in valiables:
+                key, value = v.split('=')
+                setattr(self, key, value)
+
         # Call begin method
         begin_method = getattr(self, 'begin', None)
         if begin_method != None and callable(begin_method):
             begin_method()
 
         # Set input type
-        if len(sys.argv) == 1:
+        if len(self._args.files) == 0:
             f = sys.stdin
             self.__each_line(f)
         else:
-            for file_name in sys.argv[1:]:
+            for file_name in self._args.files[0:]:
                 with open(file_name, newline=self.RS) as f:
                     self.FILENAME = file_name
                     self.__each_line(f)
@@ -52,7 +73,8 @@ class PyAwk(object):
             for action in actions:
                 action_method = getattr(self, action, None)
                 if action_method != None and callable(action_method):
-                    action_method(columns)
+                    wrapped_method = debugger(action_method)
+                    wrapped_method(self, columns)
 
     def p(self, string, pattern):
         '''

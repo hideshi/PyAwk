@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.3
+# ./builtinvaliable -d -v a=10,b=20 files
 from pyawk import PyAwk
 class BuiltInValiable(PyAwk):
     def begin(self):
@@ -6,6 +7,8 @@ class BuiltInValiable(PyAwk):
         self.OFS = '\t'
         self.RS = '\n'
         self.ORS = '\r\n'
+        print(self.a)
+        print(self.b)
 
     def action(self, S):
         if self.p(self.FILENAME, r'\.csv'):
