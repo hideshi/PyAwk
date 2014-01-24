@@ -92,11 +92,15 @@ class PyAwk(object):
             self.NR = self.NR + 1
             self.FNR = self.FNR + 1
             if isinstance(line, tuple):
-                line = self.FS.join([str(i) for i in line])
-            stripped_line = line.strip()
-            columns = re.split(self.FS, stripped_line)
-            self.NF = len(columns) if stripped_line else 0
-            columns.insert(0, stripped_line)
+                #line = self.FS.join([str(i) for i in line])
+                columns = list(line)
+                self.NF = len(columns)
+                columns.insert(0, line)
+            else:
+                stripped_line = line.strip()
+                columns = re.split(self.FS, stripped_line)
+                self.NF = len(columns) if stripped_line else 0
+                columns.insert(0, stripped_line)
 
             # Call each action
             actions = [ name for name in dir(self.__class__) if name.startswith(self.ACTION_METHOD_PREFIX) ]
