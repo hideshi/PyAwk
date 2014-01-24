@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import argparse
+import sqlite3
 
 def _debugger(action_method):
     def wrapper(self, columns):
@@ -36,6 +37,7 @@ class PyAwk(object):
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
+        self.QUERY = '' # SQL statement
 
     def run(self):
         '''Run PyAwk'''
@@ -64,10 +66,17 @@ class PyAwk(object):
         else:
             for file_name in self._args.files[0:]:
                 try:
-                    with open(file_name, newline=self.RS) as f:
-                        self.FILENAME = file_name
-                        self.__each_line(f)
-                except IOError as e:
+                    self.FILENAME = file_name
+                    if file_name.endswith('.db'):
+                        conn = sqlite3.connect(file_name)
+                        with conn:
+                            self.FS = '\t'
+                            cursor = conn.cursor()
+                            self.__each_line(cursor.execute(self.QUERY).fetchall())
+                    else:
+                        with open(file_name, newline=self.RS) as f:
+                            self.__each_line(f)
+                except (IOError, sqlite3.OperationalError) as e:
                     sys.stderr.write(str(e) + '\n')
 
         # Call end method
@@ -82,6 +91,8 @@ class PyAwk(object):
         for line in f:
             self.NR = self.NR + 1
             self.FNR = self.FNR + 1
+            if isinstance(line, tuple):
+                line = self.FS.join([str(i) for i in line])
             stripped_line = line.strip()
             columns = re.split(self.FS, stripped_line)
             self.NF = len(columns) if stripped_line else 0

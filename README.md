@@ -7,5 +7,6 @@ PyAwk supports below function.
 * begin and end syntax which are called only once in a execution.  
 * awk specific valiables like FILENAME, FS, OFS, RS, ORS, NF, NR, FNR.  
 * command line options like debug mode, set valiables.  
+* SQLite3 query.
 
 If you see examples, you would learn more how to use PyAwk.  
