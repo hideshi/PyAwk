@@ -41,7 +41,6 @@ class PyAwk(object):
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
-        self.ERRNO = '' # Error message
         self.QUERY = '' # SQL statement
 
     def run(self):
