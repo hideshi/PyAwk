@@ -6,11 +6,10 @@ class SQLite(PyAwk):
         # and file name ends with '.db', 
         # database will be searched.
         self.QUERY = 'select * from test'
+        self.OFS = ','
 
     def action(self, S):
-        if self.NR == 1:
-            self.print(self.FILENAME)
-        self.print(S[1], S[self.NF])
+        self.print(self.OFS.join(str(i) for i in S[1:]))
 
     def end(self):
         self.print(self.NR)

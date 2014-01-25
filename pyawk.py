@@ -70,7 +70,6 @@ class PyAwk(object):
                     if file_name.endswith('.db'):
                         conn = sqlite3.connect(file_name)
                         with conn:
-                            self.FS = '\t'
                             cursor = conn.cursor()
                             self.__each_line(cursor.execute(self.QUERY).fetchall())
                     else:
@@ -92,7 +91,6 @@ class PyAwk(object):
             self.NR = self.NR + 1
             self.FNR = self.FNR + 1
             if isinstance(line, tuple):
-                #line = self.FS.join([str(i) for i in line])
                 columns = list(line)
                 self.NF = len(columns)
                 columns.insert(0, line)
