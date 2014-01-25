@@ -4,7 +4,13 @@ class Template(PyAwk):
     def begin(self):
         pass
 
+    def begin_file(self):
+        pass
+
     def action(self, S):
+        pass
+
+    def end_file(self):
         pass
 
     def end(self):

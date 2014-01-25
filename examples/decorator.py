@@ -14,8 +14,16 @@ class Decorator(PyAwk):
         self.print('begin method')
 
     @decorate_action
+    def begin_file(self):
+        self.print('begin file method')
+
+    @decorate_action
     def action(self, S):
         self.print(S[1:])
+
+    @decorate_action
+    def end_file(self):
+        self.print('end file method')
 
     @decorate_action
     def end(self):

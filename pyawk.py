@@ -5,12 +5,16 @@ import argparse
 import sqlite3
 
 def _debugger(action_method):
-    def wrapper(self, columns):
+    def wrapper(self, columns = None):
         if self._args.debug:
             self.print('++')
             self.print('++', columns, getattr(self, '__dict__', None))
             self.print('++')
-        action_method(columns)
+
+        if columns:
+            action_method(columns)
+        else:
+            action_method()
     return wrapper
 
 def p(string, pattern):
@@ -37,6 +41,7 @@ class PyAwk(object):
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
+        self.ERRNO = '' # Error message
         self.QUERY = '' # SQL statement
 
     def run(self):
@@ -62,28 +67,50 @@ class PyAwk(object):
         # Set input type
         if len(self._args.files) == 0:
             f = sys.stdin
-            self.__each_line(f)
+            self.__call_begin_file_method()
+            self.__process_each_line(f)
+            self.__call_end_file_method()
         else:
             for file_name in self._args.files[0:]:
                 try:
                     self.FILENAME = file_name
+                    self.__call_begin_file_method()
+
                     if file_name.endswith('.db'):
                         conn = sqlite3.connect(file_name)
                         with conn:
                             cursor = conn.cursor()
-                            self.__each_line(cursor.execute(self.QUERY).fetchall())
+                            self.__process_each_line(cursor.execute(self.QUERY).fetchall())
                     else:
                         with open(file_name, newline=self.RS) as f:
-                            self.__each_line(f)
+                            self.__process_each_line(f)
+
+                    self.__call_end_file_method()
+
                 except (IOError, sqlite3.OperationalError) as e:
                     sys.stderr.write(str(e) + '\n')
+                    sys.exit(1)
 
         # Call end method
         end_method = getattr(self, 'end', None)
         if end_method != None and callable(end_method):
             end_method()
 
-    def __each_line(self, f):
+    def __call_begin_file_method(self):
+        '''Call begin_file method'''
+        begin_file_method = getattr(self, 'begin_file', None)
+        if begin_file_method != None and callable(begin_file_method):
+            wrapped_method = _debugger(begin_file_method)
+            wrapped_method(self)
+
+    def __call_end_file_method(self):
+        '''Call end_file method'''
+        end_file_method = getattr(self, 'end_file', None)
+        if end_file_method != None and callable(end_file_method):
+            wrapped_method = _debugger(end_file_method)
+            wrapped_method(self)
+
+    def __process_each_line(self, f):
         '''Process each line'''
         self.FNR = 0
         # Read lines
