@@ -48,7 +48,7 @@ class PyAwk(object):
         # Parse arguments
         parser = argparse.ArgumentParser(description='Process arguments')
         parser.add_argument('-d', '--debug', help='enable debug mode', action='store_true')
-        parser.add_argument('-v', metavar='valiables', help='set valiables key=value,[key=value ...]')
+        parser.add_argument('-v', metavar='valiables', help='set valiables key=value[,key=value ...]')
         parser.add_argument('files', metavar='file', nargs='*', help='input file')
         self._args = parser.parse_args()
 
