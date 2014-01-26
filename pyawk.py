@@ -17,6 +17,9 @@ def _debugger(action_method):
             action_method()
     return wrapper
 
+pattern_dict1 = dict()
+pattern_dict2 = dict()
+
 def p(string, pattern):
     '''
     Pattern matcher
@@ -27,8 +30,10 @@ def p(string, pattern):
     >>> p('Python3', r'^\w.*\s.*\d$')
     False
     '''
-    p = re.compile(pattern)
-    return True if p.search(string) != None else False
+    global pattern_dict1
+    if not pattern_dict1.get(pattern, None):
+        pattern_dict1[pattern] = re.compile(pattern)
+    return True if pattern_dict1[pattern].search(string) != None else False
 
 class PyAwk(object):
     def __init__(self):
@@ -121,8 +126,11 @@ class PyAwk(object):
                 self.NF = len(columns)
                 columns.insert(0, line)
             else:
+                global pattern_dict2
+                if not pattern_dict2.get(self.FS, None):
+                    pattern_dict2[self.FS] = re.compile(self.FS)
                 stripped_line = line.strip()
-                columns = re.split(self.FS, stripped_line)
+                columns = pattern_dict2[self.FS].split(stripped_line)
                 self.NF = len(columns) if stripped_line else 0
                 columns.insert(0, stripped_line)
 
