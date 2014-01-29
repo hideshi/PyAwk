@@ -7,9 +7,9 @@ import sqlite3
 def _debugger(action_method):
     def wrapper(self, columns = None):
         if self._args.debug:
-            self.print('++')
-            self.print('++', columns, getattr(self, '__dict__', None))
-            self.print('++')
+            self.print(self.DEBUG_MESSAGE_PREFIX)
+            self.print(self.DEBUG_MESSAGE_PREFIX, columns, getattr(self, '__dict__', None))
+            self.print(self.DEBUG_MESSAGE_PREFIX)
 
         if columns:
             action_method(columns)
@@ -17,8 +17,7 @@ def _debugger(action_method):
             action_method()
     return wrapper
 
-pattern_dict1 = dict()
-pattern_dict2 = dict()
+compiled_regexp = dict()
 
 def p(string, pattern):
     '''
@@ -30,14 +29,15 @@ def p(string, pattern):
     >>> p('Python3', r'^\w.*\s.*\d$')
     False
     '''
-    global pattern_dict1
-    if not pattern_dict1.get(pattern, None):
-        pattern_dict1[pattern] = re.compile(pattern)
-    return True if pattern_dict1[pattern].search(string) != None else False
+    global compiled_regexp
+    if not compiled_regexp.get(pattern, None):
+        compiled_regexp[pattern] = re.compile(pattern)
+    return True if compiled_regexp[pattern].search(string) != None else False
 
 class PyAwk(object):
     def __init__(self):
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
+        self.DEBUG_MESSAGE_PREFIX = '++' # Prefix of debug message
         self.FILENAME = '' # File name
         self.FS = '[ \t+]' # Field separator
         self.OFS = ' ' # Output field separator
@@ -126,11 +126,11 @@ class PyAwk(object):
                 self.NF = len(columns)
                 columns.insert(0, line)
             else:
-                global pattern_dict2
-                if not pattern_dict2.get(self.FS, None):
-                    pattern_dict2[self.FS] = re.compile(self.FS)
+                global compiled_regexp
+                if not compiled_regexp.get(self.FS, None):
+                    compiled_regexp[self.FS] = re.compile(self.FS)
                 stripped_line = line.strip()
-                columns = pattern_dict2[self.FS].split(stripped_line)
+                columns = compiled_regexp[self.FS].split(stripped_line)
                 self.NF = len(columns) if stripped_line else 0
                 columns.insert(0, stripped_line)
 
