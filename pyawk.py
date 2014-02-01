@@ -70,9 +70,15 @@ class PyAwk(object):
         # Set input type
         if len(self._args.files) == 0:
             f = sys.stdin
-            self.__call_begin_file_method()
+
+            # Call begin_file method
+            self.__call_method('begin_file')
+
             self.__process_each_line(f)
-            self.__call_end_file_method()
+
+            # Call end_file method
+            self.__call_method('end_file')
+
         else:
             for file_name in self._args.files[0:]:
                 try:
