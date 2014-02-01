@@ -17,8 +17,22 @@ class Decorator(PyAwk):
     def begin_file(self):
         self.print('begin file method')
 
+    # You should pay attention to which action method is called first and which is last.
+    # Action method are called in ascending order unlike original awk.
+
     @decorate_action
-    def action(self, S):
+    def action2(self, S):
+        self.print('action2')
+        self.print(S[1:])
+
+    @decorate_action
+    def action3(self, S):
+        self.print('action3')
+        self.print(S[1:])
+
+    @decorate_action
+    def action1(self, S):
+        self.print('action1')
         self.print(S[1:])
 
     @decorate_action
