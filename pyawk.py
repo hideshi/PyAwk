@@ -47,7 +47,7 @@ class PyAwk(object):
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
-        self.FIELDWIDTHS = []
+        self.FIELDWIDTHS = [] # Field widths for fixed length file
         self.QUERY = '' # SQL statement
 
     def run(self):
