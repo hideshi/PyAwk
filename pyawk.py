@@ -36,7 +36,7 @@ def p(string, pattern):
 
 class PyAwk(object):
     def __init__(self):
-        self.METHOD_TYPES = ['begin', 'begin_file', 'end_file', 'end']
+        self._METHOD_TYPES = ['begin', 'begin_file', 'end_file', 'end']
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
         self.DEBUG_MESSAGE_PREFIX = '++' # Prefix of debug message
         self.FILENAME = '' # File name
@@ -109,7 +109,7 @@ class PyAwk(object):
 
     def __call_method(self, method_name):
         '''Call method'''
-        assert(len([m for m in self.METHOD_TYPES if method_name and method_name == m]) == 1)
+        assert(len([m for m in self._METHOD_TYPES if method_name and method_name == m]) == 1)
         method = getattr(self, method_name, None)
         if method != None and callable(method):
             wrapped_method = _debugger(method)
