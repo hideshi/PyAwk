@@ -47,6 +47,7 @@ class PyAwk(object):
         self.NF = 0 # Number of fields
         self.NR = 0 # Number of records
         self.FNR = 0 # File number of records
+        self.FIELDWIDTHS = []
         self.QUERY = '' # SQL statement
 
     def run(self):
@@ -130,7 +131,14 @@ class PyAwk(object):
                 if not compiled_regexp.get(self.FS, None):
                     compiled_regexp[self.FS] = re.compile(self.FS)
                 stripped_line = line.strip()
-                columns = compiled_regexp[self.FS].split(stripped_line)
+                if len(self.FIELDWIDTHS) > 0:
+                    start = 0
+                    columns = []
+                    for width in self.FIELDWIDTHS:
+                        columns.append(line[start:start+width])
+                        start += width
+                else:
+                    columns = compiled_regexp[self.FS].split(stripped_line)
                 self.NF = len(columns) if stripped_line else 0
                 columns.insert(0, stripped_line)
 
