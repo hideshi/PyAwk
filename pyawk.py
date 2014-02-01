@@ -36,6 +36,7 @@ def p(string, pattern):
 
 class PyAwk(object):
     def __init__(self):
+        self.METHOD_TYPES = ['begin', 'begin_file', 'end_file', 'end']
         self.ACTION_METHOD_PREFIX = 'act' # Prefix of action method
         self.DEBUG_MESSAGE_PREFIX = '++' # Prefix of debug message
         self.FILENAME = '' # File name
@@ -64,9 +65,7 @@ class PyAwk(object):
                 setattr(self, key, value)
 
         # Call begin method
-        begin_method = getattr(self, 'begin', None)
-        if begin_method != None and callable(begin_method):
-            begin_method()
+        self.__call_method('begin')
 
         # Set input type
         if len(self._args.files) == 0:
@@ -78,7 +77,9 @@ class PyAwk(object):
             for file_name in self._args.files[0:]:
                 try:
                     self.FILENAME = file_name
-                    self.__call_begin_file_method()
+
+                    # Call begin_file method
+                    self.__call_method('begin_file')
 
                     if file_name.endswith('.db'):
                         conn = sqlite3.connect(file_name)
@@ -89,29 +90,22 @@ class PyAwk(object):
                         with open(file_name, newline=self.RS) as f:
                             self.__process_each_line(f)
 
-                    self.__call_end_file_method()
+                    # Call end_file method
+                    self.__call_method('end_file')
 
                 except (IOError, sqlite3.OperationalError) as e:
                     sys.stderr.write(str(e) + '\n')
                     sys.exit(1)
 
         # Call end method
-        end_method = getattr(self, 'end', None)
-        if end_method != None and callable(end_method):
-            end_method()
+        self.__call_method('end')
 
-    def __call_begin_file_method(self):
-        '''Call begin_file method'''
-        begin_file_method = getattr(self, 'begin_file', None)
-        if begin_file_method != None and callable(begin_file_method):
-            wrapped_method = _debugger(begin_file_method)
-            wrapped_method(self)
-
-    def __call_end_file_method(self):
-        '''Call end_file method'''
-        end_file_method = getattr(self, 'end_file', None)
-        if end_file_method != None and callable(end_file_method):
-            wrapped_method = _debugger(end_file_method)
+    def __call_method(self, method_name):
+        '''Call method'''
+        assert(len([m for m in self.METHOD_TYPES if method_name and method_name == m]) == 1)
+        method = getattr(self, method_name, None)
+        if method != None and callable(method):
+            wrapped_method = _debugger(method)
             wrapped_method(self)
 
     def __process_each_line(self, f):
